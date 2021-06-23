@@ -1,6 +1,6 @@
 import React from "react";
 
-import currencies from "../public/currencies.json";
+import currencies from "../../public/currencies.json";
 import { useDebounce } from "./useDebounce";
 
 export const useCurrencies = (keyword) => {
