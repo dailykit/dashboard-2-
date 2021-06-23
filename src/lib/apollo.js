@@ -1,64 +1,64 @@
-import React from 'react';
+import React from "react";
 // Apollo Client Imports
 import {
-    split,
-    ApolloClient,
-    ApolloLink,
-    InMemoryCache,
-    createHttpLink,
-    ApolloProvider as Provider,
-
+  split,
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider as Provider,
 } from "@apollo/client";
+import { setContext } from "apollo-link-context";
+import { HttpLink } from "apollo-link-http";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
 
-import { SubscriptionClient } from "subscriptions-transport-ws";
+const authLink = setContext((_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      "x-hasura-admin-secret":
+        process.browser && `${window._env_.ADMIN_SECRET}`,
+    },
+  };
+});
 
-
-const wssClient = new SubscriptionClient(
-    `${process.env.REACT_APP_DAILYCLOAK_SUBS_URL}`,
-    {
+const wsLink = process.browser
+  ? new WebSocketLink({
+      uri: process.browser && window._env_.DATA_HUB_WSS,
+      options: {
         reconnect: true,
         connectionParams: {
-            headers: {
-                "x-hasura-admin-secret": `${process.env.REACT_APP_ADMIN_SECRET}`,
-            },
+          headers: {
+            "x-hasura-admin-secret": `${window._env_.ADMIN_SECRET}`,
+          },
         },
-    }
-);
+      },
+    })
+  : null;
 
-const wssLink = new WebSocketLink(wssClient);
-
-const authLink = new ApolloLink((operation, forward) => {
-    operation.setContext(({ headers }) => ({
-        headers: {
-            ...headers,
-            "x-hasura-admin-secret": `${process.env.REACT_APP_ADMIN_SECRET}`,
-        },
-    }));
-    return forward(operation);
+const httpLink = new HttpLink({
+  uri: process.browser && window._env_.DATA_HUB_HTTPS,
 });
 
-const httpLink = createHttpLink({
-    uri: `${process.env.REACT_APP_DAILYCLOAK_URL}`,
-});
-
-const splitLink = process.browser ? split(
-    ({ query }) => {
+const link = process.browser
+  ? split(
+      ({ query }) => {
         const definition = getMainDefinition(query);
         return (
-            definition.kind === "OperationDefinition" &&
-            definition.operation === "subscription"
+          definition.kind === "OperationDefinition" &&
+          definition.operation === "subscription"
         );
-    },
-    wssLink,
-    authLink.concat(httpLink)
-) : httpLink
+      },
+      wsLink,
+      authLink.concat(httpLink)
+    )
+  : httpLink;
 
 const client = new ApolloClient({
-    link: splitLink,
-    cache: new InMemoryCache(),
+  link,
+  fetch,
+  cache: new InMemoryCache(),
 });
+
 export const ApolloProvider = ({ children }) => {
-    return <Provider client={client}>{children}</Provider>
-}
+  return <Provider client={client}>{children}</Provider>;
+};
