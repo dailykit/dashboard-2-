@@ -15,7 +15,7 @@ import { Footer, Main, Field, Label, Form, Button, H2 } from "../../components/s
 
 import Layout from "../../components/Layout";
 import { useAuth } from "../../store/auth";
-// import VerifyEmailBanner from "./VerifyEmailBanner";
+import VerifyEmailBanner from "../../VerifyEmailBanner";
 import { UPDATE_ORGANIZATION } from "../../graphql";
 import { useTimezones, useCurrencies } from "../../utils";
 
@@ -78,7 +78,7 @@ export default function Company() {
   return (
     <Layout>
       <Main>
-        {!user?.keycloak?.email_verified && <div />}
+        {!user?.keycloak?.email_verified && <VerifyEmailBanner />}
         <section className="mt-8 mx-auto w-1/4">
           <H2>Tell us about your company</H2>
           <Form>

@@ -9,9 +9,9 @@ export const Layout = ({ children }) => {
   const { authenticated } = useAuth();
   const [isSidebarVisible, toggleSidebar] = React.useState(false);
 
-  useEffect(() => {
-    if (!authenticated) router.push("/login");
-  }, []);
+  // useEffect(() => {
+  //   if (!authenticated) router.push("/login");
+  // }, []);
   return (
     <>
       <Header toggleSidebar={toggleSidebar} />

@@ -24,7 +24,7 @@ export default function Signup() {
       }
     },
   });
-
+  console.log(history)
   const [form, setForm] = React.useState({
     email: "",
     password: "",
@@ -63,7 +63,7 @@ export default function Signup() {
         });
         if (user?.sub) {
           dispatch({ type: "SET_USER", payload: { email: user?.email } });
-          history.push("/signup/company");
+          history.replace("/signup/company");
         }
       }
     } catch (error) {

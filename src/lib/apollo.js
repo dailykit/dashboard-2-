@@ -23,16 +23,16 @@ const authLink = setContext((_, { headers }) => {
 
 const wsLink = process.browser
   ? new WebSocketLink({
-      uri: process.browser && window._env_.DATA_HUB_WSS,
-      options: {
-        reconnect: true,
-        connectionParams: {
-          headers: {
-            "x-hasura-admin-secret": `${window._env_.ADMIN_SECRET}`,
-          },
+    uri: process.browser && window._env_.DATA_HUB_WSS,
+    options: {
+      reconnect: true,
+      connectionParams: {
+        headers: {
+          "x-hasura-admin-secret": `${window._env_.ADMIN_SECRET}`,
         },
       },
-    })
+    },
+  })
   : null;
 
 const httpLink = new HttpLink({
@@ -41,16 +41,16 @@ const httpLink = new HttpLink({
 
 const link = process.browser
   ? split(
-      ({ query }) => {
-        const definition = getMainDefinition(query);
-        return (
-          definition.kind === "OperationDefinition" &&
-          definition.operation === "subscription"
-        );
-      },
-      wsLink,
-      authLink.concat(httpLink)
-    )
+    ({ query }) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.operation === "subscription"
+      );
+    },
+    wsLink,
+    authLink.concat(httpLink)
+  )
   : httpLink;
 
 const client = new ApolloClient({

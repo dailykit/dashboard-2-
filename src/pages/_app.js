@@ -1,6 +1,6 @@
-import "../styles/globals.css";
+// import "../styles/globals.css";
 import React from "react";
-import ApolloProvider from "../lib/apollo";
+import { ApolloProvider } from "../lib/apollo";
 import { AuthProvider } from "../store/auth";
 import { TabProvider } from "../store/tabs";
 
