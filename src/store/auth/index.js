@@ -47,9 +47,16 @@ const reducers = (state, { type, payload }) => {
   }
 };
 
+function Redirect({ to }) {
+  const router = useRouter();
+  React.useEffect(() => {
+    router.push(to);
+  }, [to]);
+  return null
+}
+
 export const AuthProvider = ({ children }) => {
-  const history = useRouter();
-  const location = useRouter();
+  const router = useRouter();
   const [state, dispatch] = React.useReducer(reducers, {
     authenticated: false,
     user: {
@@ -77,28 +84,28 @@ export const AuthProvider = ({ children }) => {
         if (status) {
           switch (status) {
             case "COMPANY":
-              history.push("/signup/company");
+              <Redirect to="/signup/company" />
               break;
             case "ABOUT_YOURSELF":
-              history.push("/signup/about-yourself");
+              <Redirect to="/signup/about-yourself" />
               break;
             case "HOSTING":
-              history.push("/signup/hosting");
+              <Redirect to="/signup/hosting" />
               break;
             case "SUPPORT":
-              history.push("/signup/support");
+              <Redirect to="/signup/support" />
               break;
             case "IMPORT":
-              history.push("/signup/import");
+              <Redirect to="/signup/import" />
               break;
             case "SETUP_DOMAIN":
-              history.push("/signup/finish-setup");
+              <Redirect to="/signup/finish-setup" />
               break;
             case "FINISH_SETUP":
-              history.push("/signup/finish-setup");
+              <Redirect to="/signup/finish-setup" />
               break;
             case "ONBOARDED":
-              history.push("/");
+              <Redirect to="/" />
               break;
             default:
               break;
@@ -121,15 +128,22 @@ export const AuthProvider = ({ children }) => {
       console.log(error);
     }
   }, []);
+  function Redirect({ to }) {
+    const router = useRouter();
+    React.useEffect(() => {
+      router.push(to);
+    }, [to]);
+    return null
+  }
 
   const logout = React.useCallback(() => {
     localStorage.removeItem("token");
     dispatch({ type: "LOGOUT" });
-    history.push("/login");
+    <Redirect to="/login" />
   }, []);
 
   React.useEffect(() => {
-    switch (location.pathname) {
+    switch (router.pathname) {
       case "/signup": {
         dispatch({ type: "CHANGE_STEP", payload: 1 });
         break;
@@ -159,7 +173,7 @@ export const AuthProvider = ({ children }) => {
         break;
       }
     }
-  }, [location.pathname]);
+  }, [router.pathname]);
 
   const login = async ({ email, password }) => {
     try {
