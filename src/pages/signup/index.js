@@ -24,7 +24,7 @@ export default function Signup() {
       }
     },
   });
-  console.log(history)
+
   const [form, setForm] = React.useState({
     email: "",
     password: "",
@@ -61,7 +61,9 @@ export default function Signup() {
           email: form.email.trim(),
           password: form.password.trim(),
         });
+        console.log("🐱‍🚀 after utils.login")
         if (user?.sub) {
+          console.log('✔ dispatch done to signup/company')
           dispatch({ type: "SET_USER", payload: { email: user?.email } });
           history.replace("/signup/company");
         }
