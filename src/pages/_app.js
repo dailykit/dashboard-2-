@@ -1,16 +1,13 @@
-import "../styles/globals.css";
-import React from "react";
-import { ApolloProvider } from "../lib/apollo";
-import { AuthProvider } from "../store/auth";
-import { TabProvider } from "../store/tabs";
+import '../styles/globals.css';
+import React from 'react';
+import { ApolloProvider } from '../lib/apollo';
+import { AuthProvider } from '../store/auth';
 
 function MyApp({ Component, pageProps }) {
   return (
     <ApolloProvider>
       <AuthProvider>
-        <TabProvider>
-          <Component {...pageProps} />
-        </TabProvider>
+        <Component {...pageProps} />
       </AuthProvider>
     </ApolloProvider>
   );
